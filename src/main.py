@@ -20,11 +20,13 @@ plt.ylabel(data.feature_names[1])
 for i in range(len(data.target_names)): 
     bucket = df[df['Target'] == i] 
     bucket = bucket.iloc[:,[0,1]].values 
-    hull = ConvexHull(bucket) #bagian ini diganti dengan hasil implementasi ConvexHull Divide & Conquer 
+    hull = myConvexHull.convexhull(bucket)
+    print(hull)
+    # hull = ConvexHull(bucket) #bagian ini diganti dengan hasil implementasi ConvexHull Divide & Conquer 
     plt.scatter(bucket[:, 0], bucket[:, 1], label=data.target_names[i]) 
-    for simplex in hull.simplices: 
+    for simplex in hull: 
         plt.plot(bucket[simplex, 0], bucket[simplex, 1], colors[i]) 
 
 plt.legend()
 
-plt.savefig("../test/output/iris.jpg", bbox_inches='tight')
+plt.savefig("../test/output/iris1.jpg", bbox_inches='tight')

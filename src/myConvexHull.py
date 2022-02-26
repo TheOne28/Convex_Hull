@@ -19,7 +19,7 @@ def findLength(p1, p2):
     difx = p1[0] - p2[0]
     dify = p1[1] - p2[1]
 
-    return sqrt((difx ** 2) + (dify ** 2))
+    return ((difx ** 2) + (dify ** 2)) ** 0.5
 
 def findCosine(find, param1, param2):
     denom = (param1 ** 2) + (param2 ** 2) - (find ** 2)
@@ -27,7 +27,7 @@ def findCosine(find, param1, param2):
 
 def findDistance(cosine, param1):
     param2 = cosine * param1
-    return sqrt((param1 ** 2) - (param2 ** 2))
+    return (param1 ** 2) - (param2 ** 2) ** 0.5
 
 def convexhull(data):
     copy_data = deepcopy(data)
@@ -42,19 +42,19 @@ def convexhull(data):
     right_part = []
 
     for i in range(1, length - 1):
-        if(determinant(p1, p2, sorted_data[i])):
+        if(determinant(p1, p2, sorted_data[i]) > 0):
             left_part.append(sorted_data[i])
         else:
             right_part.append(sorted_data[i])
     
     final = DCStep(left_part, p1, p2 )
-    final.append(DCStep(right_part, p1, p2))
+    final[0].append(DCStep(right_part, p1, p2))
 
     return final
 
 def DCStep(array, p1, p2):
-    if(len(array) == 1):
-        return array[0]
+    if(len(array) == 0):
+        return p2
     else:
         final = []
 
@@ -62,11 +62,12 @@ def DCStep(array, p1, p2):
         maxLength = 0
         maxAngle = 0.0
         p3 = []
+        print(len(array))
         for i in range(len(array)):
             length2 = findLength(p1, array[i])
             length3 = findLength(p2, array[i])
 
-            cosine = findCosine(length2, length3, length)
+            cosine = findCosine(length3, length2, length)
             distance = findDistance(cosine, length2)
 
             if(distance > maxLength):
@@ -74,10 +75,25 @@ def DCStep(array, p1, p2):
                 p3 = array[i]
                 maxAngle = arccos(cosine)
             elif(distance == maxLength):
-                angle = arccos(cosine)
+                angle = arccos(findCosine(length, length2, length3))
                 if(angle > maxAngle):
                     maxLength = distance
                     p3 = array[i]
-                    maxAngle = arccos(cosine)
+                    maxAngle = angle
 
-            
+        first_part = []
+        second_part = []
+
+        if(len(p3) != 0):
+            for i in range(0, len(array)):
+                if(array[i][0] != p3[0] and array[i][1] != p3[1]):
+                    if(determinant(p1, p3, array[i]) > 0):
+                        first_part.append(array[i])
+                    
+                    if(determinant(p2, p3, array[i]) > 0):
+                        second_part.append(array[i])
+                
+        final.append(DCStep(first_part, p1, p3))
+        final[0].append(DCStep(second_part, p2, p3))
+
+        return final
