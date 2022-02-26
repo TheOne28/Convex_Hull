@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull
-import convexhull
+import myConvexHull
 
 from sklearn import datasets
 data = datasets.load_iris()
@@ -23,6 +23,7 @@ for i in range(len(data.target_names)):
     hull = ConvexHull(bucket) #bagian ini diganti dengan hasil implementasi ConvexHull Divide & Conquer 
     plt.scatter(bucket[:, 0], bucket[:, 1], label=data.target_names[i]) 
     for simplex in hull.simplices: 
+        j += 1
         plt.plot(bucket[simplex, 0], bucket[simplex, 1], colors[i]) 
 
 plt.legend()
