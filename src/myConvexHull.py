@@ -42,11 +42,14 @@ def creteDict(data):
 
 
 def convexhull(data):
-    copy_data = deepcopy(data)
-    dataInDict = creteDict(copy_data)
-    length = len(data)
+    copy_Data = deepcopy(data)
+    dataInDict = creteDict(copy_Data)
+    
+    clean_Data = []
+    [clean_Data.append(x) for x in copy_Data if not checkexist(clean_Data, x)]
 
-    sorted_data = sorted(copy_data, key = lambda x: (x[0], x[1]))
+    sorted_data = sorted(clean_Data, key = lambda x: (x[0], x[1]))
+    length = len(sorted_data)
 
     p1 = sorted_data[0]
     p2 = sorted_data[length - 1]
@@ -62,11 +65,11 @@ def convexhull(data):
     
     final = []
 
+    print("Left: \n")
     DCStep(left_part, p1, p2, final, dataInDict)
+    print("Right: \n")
     DCStep(right_part, p2, p1, final, dataInDict)
 
-    # finalClean = []
-    # [finalClean.append(element) for element in final if element not in finalClean] 
     return final
 
 def DCStep(array, p1, p2, final, dataInDict):
@@ -76,9 +79,12 @@ def DCStep(array, p1, p2, final, dataInDict):
         newPair.append(dataInDict[tuple(p2)])
 
         if(not checkexist(final, newPair)):
+            print(p1, p2)
             final.append(newPair)
     else:
-        print(array)
+        for each in array:
+            print(each)
+        print("\n")
         length = findLength(p1, p2)
         #length -> p1 p2
         maxLength = 0
@@ -107,16 +113,23 @@ def DCStep(array, p1, p2, final, dataInDict):
         second_part = []
 
         if(len(p3) != 0):
-            for i in range(0, len(array)):
-                if(array[i][0] != p3[0] and array[i][1] != p3[1]):
+            for i in range(len(array)):
+                if(array[i][0] != p3[0] or array[i][1] != p3[1]):
+                    print(array[i], determinant(p1, p3, array[i]))
+                    print(array[i], determinant(p2, p3, array[i]))
+                    print("")
                     #Sebelah kiri garis p1pmax
                     if(determinant(p1, p3, array[i]) > 0):
                         first_part.append(array[i])    
                     #Sebelah kanan garis p2pmax
-                    elif(determinant(p2, p3, array[i]) < 0):
+                    if(determinant(p2, p3, array[i]) < 0):
                         second_part.append(array[i])
 
-            print(p3)
+            print(p1, p2, p3)
             print("\n")
+            print("First: \n")
+            print(first_part)
+            print("Second: \n")
+            print(second_part)
             DCStep(first_part, p1, p3, final, dataInDict)
             DCStep(second_part, p3, p2, final, dataInDict)
