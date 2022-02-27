@@ -27,7 +27,7 @@ def findCosine(find, param1, param2):
 
 def findDistance(cosine, param1):
     param2 = cosine * param1
-    return (param1 ** 2) - (param2 ** 2) ** 0.5
+    return ((param1 ** 2) - (param2 ** 2)) ** 0.5
 
 def convexhull(data):
     copy_data = deepcopy(data)
@@ -47,29 +47,28 @@ def convexhull(data):
         else:
             right_part.append(sorted_data[i])
     
-    final = DCStep(left_part, p1, p2 )
-    final[0].append(DCStep(right_part, p1, p2))
+    final = []
+    DCStep(left_part, p1, p2, final)
+    
+    DCStep(right_part, p1, p2, final)
 
     return final
 
-def DCStep(array, p1, p2):
+def DCStep(array, p1, p2, final):
     if(len(array) == 0):
-        return p2
+        print(p2)
+        return final.append(p2)
     else:
-        final = []
-
         length = findLength(p1, p2)
         maxLength = 0
         maxAngle = 0.0
         p3 = []
-        print(len(array))
         for i in range(len(array)):
             length2 = findLength(p1, array[i])
             length3 = findLength(p2, array[i])
 
             cosine = findCosine(length3, length2, length)
             distance = findDistance(cosine, length2)
-
             if(distance > maxLength):
                 maxLength = distance
                 p3 = array[i]
@@ -93,7 +92,5 @@ def DCStep(array, p1, p2):
                     if(determinant(p2, p3, array[i]) > 0):
                         second_part.append(array[i])
                 
-        final.append(DCStep(first_part, p1, p3))
-        final[0].append(DCStep(second_part, p2, p3))
-
-        return final
+        DCStep(first_part, p1, p3, final)
+        DCStep(second_part, p2, p3, final)

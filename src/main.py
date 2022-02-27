@@ -19,14 +19,15 @@ plt.xlabel(data.feature_names[0])
 plt.ylabel(data.feature_names[1]) 
 for i in range(len(data.target_names)): 
     bucket = df[df['Target'] == i] 
-    bucket = bucket.iloc[:,[0,1]].values 
-    hull = myConvexHull.convexhull(bucket)
-    print(hull)
-    # hull = ConvexHull(bucket) #bagian ini diganti dengan hasil implementasi ConvexHull Divide & Conquer 
+    bucket = bucket.iloc[:,[0,1]].values
+    print(bucket) 
+    # hull = myConvexHull.convexhull(bucket)
+    hull = ConvexHull(bucket) #bagian ini diganti dengan hasil implementasi ConvexHull Divide & Conquer 
+    print(hull.simplices)
     plt.scatter(bucket[:, 0], bucket[:, 1], label=data.target_names[i]) 
-    for simplex in hull: 
+    for simplex in hull.sim: 
         plt.plot(bucket[simplex, 0], bucket[simplex, 1], colors[i]) 
 
 plt.legend()
 
-plt.savefig("../test/output/iris1.jpg", bbox_inches='tight')
+# plt.savefig("../test/output/iris1.jpg", bbox_inches='tight')
