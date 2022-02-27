@@ -1,7 +1,7 @@
 from cmath import sqrt
 from copy import deepcopy
 from numpy import arange, arccos
-
+from math import isclose, acos
 
 def determinant(p1, p2, p3):
     #Pengecekan posisi p3 dibanding dengan p1 p2
@@ -19,7 +19,8 @@ def findLength(p1, p2):
 
 def findCosine(find, param1, param2):
     denom = (param1 ** 2) + (param2 ** 2) - (find ** 2)
-    return denom / (2 * param2 * param1)
+    denom /= (2 * param2 * param1)
+    return denom
 
 def findDistance(cosine, param1):
     param2 = cosine * param1
@@ -62,7 +63,7 @@ def convexhull(data):
     final = []
 
     DCStep(left_part, p1, p2, final, dataInDict)
-    DCStep(right_part, p1, p2, final, dataInDict)
+    DCStep(right_part, p2, p1, final, dataInDict)
 
     # finalClean = []
     # [finalClean.append(element) for element in final if element not in finalClean] 
@@ -77,25 +78,26 @@ def DCStep(array, p1, p2, final, dataInDict):
         if(not checkexist(final, newPair)):
             final.append(newPair)
     else:
+        print(array)
         length = findLength(p1, p2)
+        #length -> p1 p2
         maxLength = 0
         maxAngle = 0.0
         p3 = []
-        # print(final)
-        # print(array)
 
         for i in range(len(array)):
             length2 = findLength(p1, array[i])
             length3 = findLength(p2, array[i])
 
             cosine = findCosine(length3, length2, length)
-            distance = findDistance(cosine, length2)
+            area = determinant(p1, p2, array[i])
+            distance = abs(area) / length
             if(distance > maxLength):
                 maxLength = distance
                 p3 = array[i]
-                maxAngle = arccos(cosine)
-            elif(distance == maxLength):
-                angle = arccos(cosine)
+                maxAngle = acos(cosine)
+            elif(isclose(distance, maxLength)):
+                angle = acos(cosine)
                 if(angle > maxAngle):
                     maxLength = distance
                     p3 = array[i]
@@ -114,7 +116,7 @@ def DCStep(array, p1, p2, final, dataInDict):
                     elif(determinant(p2, p3, array[i]) < 0):
                         second_part.append(array[i])
 
-            # print(p3)
-            # print("\n")
+            print(p3)
+            print("\n")
             DCStep(first_part, p1, p3, final, dataInDict)
-            DCStep(second_part, p2, p3, final, dataInDict)
+            DCStep(second_part, p3, p2, final, dataInDict)
