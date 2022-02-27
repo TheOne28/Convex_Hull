@@ -11,7 +11,6 @@ data = datasets.load_iris()
 df = pd.DataFrame(data.data, columns=data.feature_names)
 
 df['Target'] = pd.DataFrame(data.target)  
-
 plt.figure(figsize = (10, 6)) 
 colors = ['b','r','g'] 
 plt.title('Petal Width vs Petal Length') 
@@ -20,14 +19,17 @@ plt.ylabel(data.feature_names[1])
 for i in range(len(data.target_names)): 
     bucket = df[df['Target'] == i] 
     bucket = bucket.iloc[:,[0,1]].values
-    print(bucket) 
-    # hull = myConvexHull.convexhull(bucket)
-    hull = ConvexHull(bucket) #bagian ini diganti dengan hasil implementasi ConvexHull Divide & Conquer 
-    print(hull.simplices)
+    # print(len(bucket))
+    hull = myConvexHull.convexhull(bucket)
+    # hull = ConvexHull(bucket) #bagian ini diganti dengan hasil implementasi ConvexHull Divide & Conquer 
+    for all in hull:
+        print(all)
+    print("\n")
     plt.scatter(bucket[:, 0], bucket[:, 1], label=data.target_names[i]) 
-    for simplex in hull.sim: 
+    for simplex in hull: 
+        # print(simplex, bucket[simplex[0]], bucket[simplex[1]])
         plt.plot(bucket[simplex, 0], bucket[simplex, 1], colors[i]) 
 
 plt.legend()
 
-# plt.savefig("../test/output/iris1.jpg", bbox_inches='tight')
+plt.savefig("../test/output/iris1.jpg", bbox_inches='tight')
