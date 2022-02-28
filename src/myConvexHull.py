@@ -101,7 +101,7 @@ def DCStep(array, p1, p2, final, dataInDict):
             cosine = findCosine(length3, length2, length)
             
             #!Ini kasus cosine > 1, dalam beberapa uji coba terjadi karena ketidakdepatan float, saya belum menemukan solusinya
-            if(cosine > 1):
+            if(cosine > 1 or cosine < -1):
                 cosine = 1
             area = determinant(p1, p2, array[i])
             distance = abs(area) / length
